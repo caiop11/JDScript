@@ -28,7 +28,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
-const randomCount = $.isNode() ? 20 : 5;
+const randomCount = 0 ;
 //IOS等用户直接用NobyDa的jd cookie
 
 let cookiesArr = [], cookie = '', message;
@@ -71,12 +71,12 @@ const JD_API_HOST = 'https://api.m.jd.com/', actCode = 'lucky-box-001';
     }
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 
 async function jdGlobalMh() {
   try {
@@ -310,7 +310,7 @@ function taskUrl(function_id, body = {}) {
   function getSign(data) {
     let t = +new Date()
 
-    return {sealsTs: t, seals: $.md5(`${data.taskId}${data.inviterPin?data.inviterPin:''}${t}hbpt2020`)}
+    return {sealsTs: t, seals: $.md5(`${data.taskId}${data.inviterPin?data.inviterPin:''}${t}Ea6YXT`)}
   }
   if(body['taskId']) {
     body = {...body, ...getSign(body)}
