@@ -10,7 +10,7 @@
 活动时间：长期活动
 更新地址：https://gitee.com/lxk0301/jd_scripts/raw/master/jd_ms.js
 活动入口：京东app-京东秒杀-签到领红包
-脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
+脚本兼容:QuantumultX,Surge,Loon,JSBox,Node.js
 ============Quantumultx===============
 [task_local]
 #京东秒秒币
@@ -39,7 +39,7 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {
   };
-//  if(JSON.stringify(process.env).indexOf('GITHUB')>-1) process.exit(0)
+  if(JSON.stringify(process.env).indexOf('GITHUB')>-1) process.exit(0)
 } else {
   let cookiesData = $.getdata('CookiesJD') || "[]";
   cookiesData = jsonParse(cookiesData);
@@ -70,8 +70,6 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
 
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-        } else {
-          $.setdata('', `CookieJD${i ? i + 1 : ""}`);//cookie失效，故清空cookie。$.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
         }
         continue
       }
@@ -79,12 +77,12 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
     }
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 
 async function jdMs() {
   $.score = 0
@@ -257,7 +255,7 @@ function taskPostUrl(function_id, body = {}, extra = '', function_id2) {
   }
   return {
     url,
-    body: `functionId=${function_id}&body=${escape(JSON.stringify(body))}&client=wh5&clientVersion=9.3.2&${extra}`,
+    body: `functionId=${function_id}&body=${escape(JSON.stringify(body))}&client=wh5&clientVersion=1.0.0&${extra}`,
     headers: {
       "Cookie": cookie,
       "origin": "https://h5.m.jd.com",
@@ -295,7 +293,11 @@ function TotalBean() {
               $.isLogin = false; //cookie过期
               return
             }
-            $.nickName = data['base'].nickname;
+            if (data['retcode'] === 0) {
+              $.nickName = data['base'].nickname;
+            } else {
+              $.nickName = $.UserName
+            }
           } else {
             console.log(`京东服务器返回空数据`)
           }
