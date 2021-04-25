@@ -75,7 +75,7 @@ function collectScore() {
     $.get(taskUrl("jdhealth_collectProduceScore", {}), (err, resp, data) => {
       try {
         if (safeGet(data)) {
-          data = $.toObj(data);
+          /*data = $.toObj(data);
           if (data?.data?.bizCode === 0) {
             if (data?.data?.result?.produceScore)
               console.log(
@@ -89,7 +89,7 @@ function collectScore() {
               );
           } else {
             console.log(`任务完成失败：${data?.data?.bizMsg ?? JSON.stringify(data)}`);
-          }
+          }*/
         }
       } catch (e) {
         console.log(e);
