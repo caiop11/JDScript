@@ -34,7 +34,7 @@ if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
-  console.log(`如果出现提示 ?.data. 错误，请升级nodejs版本(进入容器后，apk add nodejs-current)`)
+  console.log(`如果出现提示 ?.data. 错误,请升级nodejs版本(进入容器后,apk add nodejs-current)`)
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
   cookiesArr = [
@@ -104,7 +104,7 @@ async function helpFriends() {
     console.log(`去助力好友${code}`)
     let res = await doTask(code, 6)
     /*if([108,-1001].includes(res?.data?.bizCode)){
-      console.log(`助力次数已满，跳出`)
+      console.log(`助力次数已满,跳出`)
       break
     }*/
     await $.wait(1000)
@@ -113,7 +113,7 @@ async function helpFriends() {
 
 function showMsg() {
   return new Promise(async resolve => {
-    message += `本次获得${$.earn}健康值，累计${$.score}健康值\n`
+    message += `本次获得${$.earn}健康值,累计${$.score}健康值\n`
     $.msg($.name, '', `京东账号${$.index} ${$.UserName}\n${message}`);
     resolve();
   })
@@ -141,13 +141,13 @@ function getTaskDetail(taskId = '') {
                 // console.log('好友助力码：' + data?.data?.result?.taskVos[0].assistTaskDetailVo.taskToken)
               }
             } else if (taskId === 22) {
-              console.log(`${data?.data?.result?.taskVos[0]?.taskName}任务，完成次数：${data?.data?.result?.taskVos[0]?.times}/${data?.data?.result?.taskVos[0]?.maxTimes}`)
+              console.log(`${data?.data?.result?.taskVos[0]?.taskName}任务,完成次数：${data?.data?.result?.taskVos[0]?.times}/${data?.data?.result?.taskVos[0]?.maxTimes}`)
               if (data?.data?.result?.taskVos[0]?.times === data?.data?.result?.taskVos[0]?.maxTimes) return
               await doTask(data?.data?.result?.taskVos[0].shoppingActivityVos[0]?.taskToken, 22, 1)//领取任务
               await $.wait(1000 * (data?.data?.result?.taskVos[0]?.waitDuration || 3));
               await doTask(data?.data?.result?.taskVos[0].shoppingActivityVos[0]?.taskToken, 22, 0);//完成任务
             } else for (let vo of data?.data?.result?.taskVos.filter(vo => vo.taskType !== 19) ?? []) {
-              console.log(`${vo.taskName}任务，完成次数：${vo.times}/${vo.maxTimes}`)
+              console.log(`${vo.taskName}任务,完成次数：${vo.times}/${vo.maxTimes}`)
               for (let i = vo.times; i < vo.maxTimes; ++i) {
                 console.log(`去完成${vo.taskName}任务`)
                 if (vo.taskType === 13) {
@@ -188,7 +188,7 @@ function doTask(taskToken, taskId, actionType = 0) {
             if ([0, 1].includes(data?.data?.bizCode ?? -1)) {
               $.canDo = true
               if (data?.data?.result?.score)
-                console.log(`任务完成成功，获得：${data?.data?.result?.score ?? '未知'}能量`)
+                console.log(`任务完成成功,获得：${data?.data?.result?.score ?? '未知'}能量`)
               else
                 console.log(`任务领取结果：${data?.data?.bizMsg ?? JSON.stringify(data)}`)
             } else {
@@ -213,7 +213,7 @@ function collectScore() {
             data = $.toObj(data)
             if (data?.data?.bizCode === 0) {
               if (data?.data?.result?.produceScore)
-                console.log(`任务完成成功，获得：${data?.data?.result?.produceScore ?? '未知'}能量`)
+                console.log(`任务完成成功,获得：${data?.data?.result?.produceScore ?? '未知'}能量`)
               else
                 console.log(`任务领取结果：${data?.data?.bizMsg ?? JSON.stringify(data)}`)
             } else {
@@ -249,7 +249,7 @@ function safeGet(data) {
     }
   } catch (e) {
     console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
+    console.log(`京东服务器访问数据为空,请检查自身设备网络情况`);
     return false;
   }
 }
@@ -264,7 +264,7 @@ function readShareCode() {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} health/read API请求失败，请检查网路重试`)
+          console.log(`${$.name} health/read API请求失败,请检查网路重试`)
         } else {
           if (data) {
             console.log(`随机取${randomCount}个码放到您固定的互助码后面(不影响已有固定互助)`)
@@ -306,7 +306,29 @@ function requireConfig() {
   return new Promise(resolve => {
     console.log(`开始获取${$.name}配置文件\n`);
     //Node.js用户请在jdCookie.js处填写京东ck;
-    let shareCodes = [];
+    let shareCodes = [
+       'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA',
+      'T018v_V1RR4d_V3QJhib1ACjVfnoaW5kRrbA@T0205KkcO2FbtjWIRWaUyJ9xCjVfnoaW5kRrbA@T0225KkcRxlN91SEJB_xnKFYIQCjVfnoaW5kRrbA@T018v_56QB8Q8lPRJhub1ACjVfnoaW5kRrbA@T0109r85GE9HogCjVfnoaW5kRrbA'
+
+  ];
     if ($.isNode()) {
       if (process.env.JDHEALTH_SHARECODES) {
         if (process.env.JDHEALTH_SHARECODES.indexOf('\n') > -1) {
