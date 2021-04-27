@@ -30,7 +30,7 @@ let cookiesArr = [], cookie = '', jdPetShareArr = [], isBox = false, notify, new
 //此此内容是IOS用户下载脚本到本地使用，填写互助码的地方，同一京东账号的好友互助码请使用@符号隔开。
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
 let shareCodes = [ // IOS本地脚本用户这个列表填入你要助力的好友的shareCode
-  //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
+   //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
   'MTE1NDQ5OTIwMDAwMDAwNDI2ODIwNTU=@MTE1NDQ5OTIwMDAwMDAwNDM2MzA1NDE=@MTE1NDQ5MzYwMDAwMDAwNDI2ODMyNzU=@MTE1NDAxNzgwMDAwMDAwNDI3MTM5Njc=@MTEzMzI0OTE0NTAwMDAwMDA0MjcxMzk4OQ==@MTE1NDUwMTI0MDAwMDAwMDQyODcyMDMx@MTE1NDUwMTI0MDAwMDAwMDQzMDA4Mzc1@MTE1NDQ5OTUwMDAwMDAwNDI3MTA5NTM=',
   //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
   'MTE1NDQ5OTIwMDAwMDAwNDI2ODIwNTU=@MTE1NDQ5OTIwMDAwMDAwNDM2MzA1NDE=@MTE1NDQ5MzYwMDAwMDAwNDI2ODMyNzU=@MTE1NDAxNzgwMDAwMDAwNDI3MTM5Njc=@MTEzMzI0OTE0NTAwMDAwMDA0MjcxMzk4OQ==@MTE1NDUwMTI0MDAwMDAwMDQyODcyMDMx@MTE1NDUwMTI0MDAwMDAwMDQzMDA4Mzc1@MTE1NDQ5OTUwMDAwMDAwNDI3MTA5NTM=',
@@ -141,9 +141,6 @@ async function jdPet() {
     }
   } catch (e) {
     $.logErr(e)
-    const errMsg = `京东账号${$.index} ${$.nickName || $.UserName}\n任务执行异常，请检查执行日志 ‼️‼️`;
-    if ($.isNode()) await notify.sendNotify(`${$.name}`, errMsg);
-    $.msg($.name, '', `京东账号${$.index} ${$.nickName || $.UserName}\n${errMsg}`)
   }
 }
 // 收取所有好感度
@@ -453,7 +450,7 @@ async function showMsg() {
 function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
-    $.get({url: "https://gitee.com/Soundantony/RandomShareCode/raw/master/JD_Pet.json",headers:{
+    $.get({url: "https://cdn.jsdelivr.net/gh/wuzhi-docker1/RandomShareCode@main/JD_Pet.json",headers:{
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
       }}, async (err, resp, data) => {
       try {
@@ -462,7 +459,7 @@ function readShareCode() {
           console.log(`${$.name} API请求失败，将切换为备用API`)
           console.log(`随机取助力码放到您固定的互助码后面(不影响已有固定互助)`)
           $.get({url: `https://raw.githubusercontent.com/shuyeshuye/RandomShareCode/main/JD_Pet.json`, 'timeout': 10000},(err, resp, data)=>{
-            data = JSON.parse(data);})
+          data = JSON.parse(data);})
         } else {
           if (data) {
             console.log(`随机取助力码放到您固定的互助码后面(不影响已有固定互助)`)

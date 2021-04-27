@@ -25,8 +25,8 @@ const notify = $.isNode() ? require("./sendNotify") : "";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 const sck = $.isNode() ? "set-cookie" : "Set-Cookie";
 let cookiesArr = [],
-    cookie = "",
-    message;
+  cookie = "",
+  message;
 let shareUUID= [
   '10353E7D47177F547CFF34AEE4785040268689DC592AC9C0A02982EE7CD3FE4549336DE54E26AA8F2834B248E6398CB7A755DF4FDAE585EC3E1ABE26F3DD3CFFC956D12974FF00A045D8E31A84FE84C18A8357DE96A1F617B8AC4D64BC24B689',
   ''
@@ -50,10 +50,10 @@ const JD_API_HOST = "https://api.m.jd.com/client.action";
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg(
-        $.name,
-        "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取",
-        "https://bean.m.jd.com/",
-        { "open-url": "https://bean.m.jd.com/" }
+      $.name,
+      "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取",
+      "https://bean.m.jd.com/",
+      { "open-url": "https://bean.m.jd.com/" }
     );
     return;
   }
@@ -61,7 +61,7 @@ const JD_API_HOST = "https://api.m.jd.com/client.action";
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(
-          cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]
+        cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]
       );
       $.index = i + 1;
       message = "";
@@ -72,13 +72,14 @@ const JD_API_HOST = "https://api.m.jd.com/client.action";
       await main()
     }
   }
+  if ($.isNode()) await notify.sendNotify(`${$.name}`, `${message}\n\n如需做注册店铺会员任务，请点击下方链接手动完成\nhttps%3A%2F%2Fmpdz-isv.isvjcloud.com%2Fql%2Ffront%2Ftcl002%2FloadTclAct%3Fid%3DtclTeamAct002%26user_id%3D10299171\n\nhttps://mpdz-isv.isvjcloud.com/ql/front/tcl002/loadTclAct?id=tclTeamAct002&user_id=10299171`);
 })()
-    .catch((e) => {
-      $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
-    })
-    .finally(() => {
-      $.done();
-    });
+  .catch((e) => {
+    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+  })
+  .finally(() => {
+    $.done();
+  });
 
 function showMsg() {
   return new Promise(resolve => {
@@ -130,7 +131,7 @@ function loadAct() {
         } else {
           //console.log(data)
           let id = data.match(/<input type="hidden" id="buyer_nick_code" name="buyer_nick_code" value="(.*)">/)
-          console.log('好友助力码' + id[1])
+          //console.log('好友助力码' + id[1])
           if (data.indexOf('<div class="yourChoice">') === -1) {
             console.log(`未选择球队，去选择`)
             await chooseTeam()
@@ -327,7 +328,7 @@ function genToken() {
       accept: "*/*",
       "user-agent": "JD4iPhone/167638 (iPhone; iOS 13.7; Scale/3.00)",
       "accept-language":
-          "zh-Hans-JP;q=1, en-JP;q=0.9, zh-Hant-TW;q=0.8, ja-JP;q=0.7, en-US;q=0.6",
+        "zh-Hans-JP;q=1, en-JP;q=0.9, zh-Hant-TW;q=0.8, ja-JP;q=0.7, en-US;q=0.6",
       "content-type": "application/x-www-form-urlencoded",
       Cookie: cookie,
     },
