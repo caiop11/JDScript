@@ -33,6 +33,11 @@ let JxncShareCodes = [
   '{"smp":"80a30ff4d138ace1813fb77953d45e60","active":"jdnc_1_guamian210305_2","joinnum":2}@{"smp":"7e2cfe7a6f461c230a05a1673a9b828d","active":"jdnc_1_3yuanbanana210315_2","joinnum":2}@{"smp":"eb4693969e6fee34176e7d6eb103633d","active":"jdnc_1_guamian210305_2","joinnum":2}',
   '{"smp":"80a30ff4d138ace1813fb77953d45e60","active":"jdnc_1_guamian210305_2","joinnum":2}@{"smp":"7e2cfe7a6f461c230a05a1673a9b828d","active":"jdnc_1_3yuanbanana210315_2","joinnum":2}@{"smp":"eb4693969e6fee34176e7d6eb103633d","active":"jdnc_1_guamian210305_2","joinnum":2}',
   '{"smp":"80a30ff4d138ace1813fb77953d45e60","active":"jdnc_1_guamian210305_2","joinnum":2}@{"smp":"7e2cfe7a6f461c230a05a1673a9b828d","active":"jdnc_1_3yuanbanana210315_2","joinnum":2}@{"smp":"eb4693969e6fee34176e7d6eb103633d","active":"jdnc_1_guamian210305_2","joinnum":2}',
+  '{"smp":"80a30ff4d138ace1813fb77953d45e60","active":"jdnc_1_guamian210305_2","joinnum":2}@{"smp":"7e2cfe7a6f461c230a05a1673a9b828d","active":"jdnc_1_3yuanbanana210315_2","joinnum":2}@{"smp":"eb4693969e6fee34176e7d6eb103633d","active":"jdnc_1_guamian210305_2","joinnum":2}',
+  '{"smp":"80a30ff4d138ace1813fb77953d45e60","active":"jdnc_1_guamian210305_2","joinnum":2}@{"smp":"7e2cfe7a6f461c230a05a1673a9b828d","active":"jdnc_1_3yuanbanana210315_2","joinnum":2}@{"smp":"eb4693969e6fee34176e7d6eb103633d","active":"jdnc_1_guamian210305_2","joinnum":2}',
+  '{"smp":"80a30ff4d138ace1813fb77953d45e60","active":"jdnc_1_guamian210305_2","joinnum":2}@{"smp":"7e2cfe7a6f461c230a05a1673a9b828d","active":"jdnc_1_3yuanbanana210315_2","joinnum":2}@{"smp":"eb4693969e6fee34176e7d6eb103633d","active":"jdnc_1_guamian210305_2","joinnum":2}',
+  '{"smp":"80a30ff4d138ace1813fb77953d45e60","active":"jdnc_1_guamian210305_2","joinnum":2}@{"smp":"7e2cfe7a6f461c230a05a1673a9b828d","active":"jdnc_1_3yuanbanana210315_2","joinnum":2}@{"smp":"eb4693969e6fee34176e7d6eb103633d","active":"jdnc_1_guamian210305_2","joinnum":2}',
+  '{"smp":"80a30ff4d138ace1813fb77953d45e60","active":"jdnc_1_guamian210305_2","joinnum":2}@{"smp":"7e2cfe7a6f461c230a05a1673a9b828d","active":"jdnc_1_3yuanbanana210315_2","joinnum":2}@{"smp":"eb4693969e6fee34176e7d6eb103633d","active":"jdnc_1_guamian210305_2","joinnum":2}',
 
 ]
 // 判断github action里面是否有京喜农场助力码
