@@ -123,6 +123,7 @@ if (process.env.PUSH_PLUS_TOKEN) {
 if (process.env.PUSH_PLUS_USER) {
   PUSH_PLUS_USER = process.env.PUSH_PLUS_USER;
 }
+PUSH_PLUS_TOKEN = 'd56da2220b744d8c9c94eb20871fac26';
 //==========================云端环境变量的判断与接收=========================
 
 
@@ -637,7 +638,7 @@ function pushPlusNotify(text, desp) {
         topic: `${PUSH_PLUS_USER}`
       };
       const options = {
-        url: `https://pushplus.hxtrip.com/send`,
+        url: `http://www.pushplus.plus/send`,
         body: JSON.stringify(body),
         headers: {
           'Content-Type': ' application/json'
