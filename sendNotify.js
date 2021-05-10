@@ -661,6 +661,7 @@ function iGotNotify(text, desp, params={}){
 
 function pushPlusNotify(text, desp) {
   return new Promise(resolve => {
+    console.log(`PUSH_PLUS_TOKEN：${PUSH_PLUS_TOKEN}\n`)
     if (PUSH_PLUS_TOKEN) {
       desp = desp.replace(/[\n\r]/g, '<br>'); // 默认为html, 不支持plaintext
       const body = {
