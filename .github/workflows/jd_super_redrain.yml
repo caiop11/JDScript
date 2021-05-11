@@ -6,7 +6,7 @@ name: jd_super_redrain-准点红包雨
 on:
   workflow_dispatch:
   schedule:
-    - cron: "59 0-23/1 * * *"
+    - cron: "58,59 0-23/1 * * *"
   watch:
     types: [started]
   repository_dispatch:
