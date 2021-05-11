@@ -6,7 +6,7 @@ name: jd_ETIP-探索无限星空
 on:
     workflow_dispatch:
     schedule:
-        - cron: "15 8 * * *"
+        - cron: "15 3,8 * * *"
     watch:
         types: [started]
     repository_dispatch:
