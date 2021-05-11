@@ -239,7 +239,7 @@ async function retryCdn(code, url) {
 }
 
 function rraUrl() {
-  let url = 'https://raw.githubusercontent.com/nianyuguai/longzhuzhu/main/qx/jd-live-rain.json'
+  let url = 'https://cdn.jsdelivr.net/gh/nianyuguai/longzhuzhu@main/qx/jd-live-rain.json'
   if($.isNode() && process.env.JD_RRA_URL){
     url = process.env.JD_RRA_URL
   }else if($.getdata('jdRRAUrl')){
