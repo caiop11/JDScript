@@ -37,6 +37,7 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {
   };
+  if (JSON.stringify(process.env).indexOf('GITHUB') > -1) process.exit(0)
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
@@ -104,7 +105,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
   }
 
 
-  if (allMessage) {
+  if (allMessage && isNotify()) {
     if ($.isNode()) await notify.sendNotify(`${$.name}`, `${allMessage}`);
     $.msg($.name, '', allMessage);
   }
@@ -184,7 +185,7 @@ function receiveRedRain() {
               console.log(`领取成功，获得${JSON.stringify(data.lotteryResult)}`)
               // message+= `领取成功，获得${JSON.stringify(data.lotteryResult)}\n`
               message += `领取成功，获得 ${(data.lotteryResult.jPeasList[0].quantity)}京豆`
-              allMessage += `京东账号${$.index}${$.nickName || $.UserName}\n领取成功，获得 ${(data.lotteryResult.jPeasList[0].quantity)}京豆${$.index !== cookiesArr.length ? '\n\n' : '\n\n'}`;
+              allMessage += `京东账号${$.index}-${$.nickName || $.UserName}\n领取成功，获得 ${(data.lotteryResult.jPeasList[0].quantity)}京豆${$.index !== cookiesArr.length ? '\n\n' : '\n\n'}`;
             } else if (data.subCode === '8') {
               console.log(`今日次数已满`)
               message += `领取失败，本场已领过`;
@@ -246,6 +247,15 @@ function rraUrl() {
     url = $.getdata('jdRRAUrl')
   }
   return url
+}
+
+function isNotify() {
+  if($.isNode() && process.env.RAIN_NOTIFY_CONTROL){
+    return process.env.RAIN_NOTIFY_CONTROL != 'false'
+  }else if($.getdata('rainNotifyControl')){
+    return $.getdata('rainNotifyControl') != 'false'
+  }
+  return true
 }
 
 function taskGetUrl(url, body) {

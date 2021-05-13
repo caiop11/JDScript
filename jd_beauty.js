@@ -64,18 +64,20 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
       if ($.accountCheck) {
         await jdBeauty();
       }
-      if($.accountCheck){ helpInfo = $.helpInfo;}
+      if ($.accountCheck) {
+        helpInfo = $.helpInfo;
+      }
     }
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 
-async function accountCheck(){
+async function accountCheck() {
   $.hasDone = false;
   console.log(`***检测账号是否黑号***`);
   await getIsvToken()
@@ -86,8 +88,8 @@ async function accountCheck(){
     process.exit(0);
     return
   }
-  let client = new WebSocket(`wss://xinruimz-isv.isvjcloud.com/wss/?token=${$.token}`,null,{
-    headers:{
+  let client = new WebSocket(`wss://xinruimz-isv.isvjcloud.com/wss/?token=${$.token}`, null, {
+    headers: {
       'user-agent': "jdapp;android;9.5.0;5.1.1;8363331303230333330383934363-73D2138356239366237373730303;network/wifi;model/vivo X7;addressid/4092959325;aid/e3378926a846c4f7;oaid/;osVer/22;appBuild/87697;partner/vivo;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 5.1.1; vivo X7 Build/LMY47V; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/6.2 TBS/044942 Mobile Safari/537.36",
     }
   });
@@ -98,22 +100,23 @@ async function accountCheck(){
     client.send(`{"msg":{"type":"action","args":{"source":1},"action":"get_user"}}`);
   };
   client.onmessage = async function (e) {
-    if(e.data !== 'pong' && e.data && safeGet(e.data)){
+    if (e.data !== 'pong' && e.data && safeGet(e.data)) {
       let vo = JSON.parse(e.data);
       if (vo.action === "_init_") {
         let vo = JSON.parse(e.data);
-        if(vo.msg === "风险用户"){
-          $.accountCheck=false;
+        if (vo.msg === "风险用户") {
+          $.accountCheck = false;
           // $.init=true;
           client.close();
-          console.log(`${vo.msg}，跳过此账号`)};
+          console.log(`${vo.msg}，跳过此账号`)
+        }
       } else if (vo.action === "get_user") {
         // $.init=true;
-        $.accountCheck=true;
+        $.accountCheck = true;
         client.close();
         console.log(`${vo.msg}，账号正常`);
       }
-    };
+    }
     client.onclose = (e) => {
       $.hasDone = true;
       // console.log(client.readyState);
@@ -160,7 +163,7 @@ async function mr() {
       client.send(`ping`)
       await $.wait(1000)
     }
-    console.log(helpInfo);
+    console.log('helpInfo', helpInfo);
     for (let help of helpInfo) {
       client.send(help);
     }
@@ -192,6 +195,7 @@ async function mr() {
     await $.wait(1000)
     // 获得福利中心
     client.send(`{"msg":{"type":"action","args":{},"action":"get_benefit"}}`)
+    client.send(`{"msg":{"type":"action","args":{},"action":"collect_coins"}}`);
   };
 
   client.onclose = () => {
@@ -433,6 +437,14 @@ async function mr() {
             console.log(`生产信息获取失败，错误信息${vo.msg}`)
           }
           break
+        case "collect_coins":
+          if (vo.code === '200' || vo.code === 200) {
+            // console.log(`product_produce:${JSON.stringify(vo)}`)
+            console.log(`收取成功，获得${vo['data']['coins']}美妆币，当前总美妆币：${vo['data']['user_coins']}\n`)
+          } else {
+            console.log(`收取美妆币失败，错误信息${vo.msg}`)
+          }
+          break
         case "product_producing":
           if (vo.code === '200' || vo.code === 200) {
             for (let product of vo.data) {
@@ -453,13 +465,13 @@ async function mr() {
             console.log(`收取产品失败，错误信息${vo.msg}`)
           }
           break
-        // case "get_task":
-        //   console.log(`当前任务【${vo.data.describe}】，需要【${vo.data.product.name}】${vo.data.package_stock}/${vo.data.num}份`)
-        //   if (vo.data.package_stock >= vo.data.num) {
-        //     console.log(`满足任务要求，去完成任务`)
-        //     client.send(`{"msg":{"type":"action","args":{"task_id":${vo.data.id}},"action":"complete_task"}}`)
-        //   }
-        //   break
+          // case "get_task":
+          //   console.log(`当前任务【${vo.data.describe}】，需要【${vo.data.product.name}】${vo.data.package_stock}/${vo.data.num}份`)
+          //   if (vo.data.package_stock >= vo.data.num) {
+          //     console.log(`满足任务要求，去完成任务`)
+          //     client.send(`{"msg":{"type":"action","args":{"task_id":${vo.data.id}},"action":"complete_task"}}`)
+          //   }
+          //   break
         case 'get_benefit':
           for (let benefit of vo.data) {
             if (benefit.type === 1) { //type 1 是京豆
