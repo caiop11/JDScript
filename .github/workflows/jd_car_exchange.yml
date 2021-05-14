@@ -10,7 +10,7 @@ on:
   watch:
     types: started
   repository_dispatch:
-    types: car_exchange
+    types: jd_car_exchange
 jobs:
   build:
 

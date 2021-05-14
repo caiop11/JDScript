@@ -10,7 +10,7 @@ on:
   watch:
     types: started
   repository_dispatch:
-    types: joy_help
+    types: jd_joy_help
 jobs:
   build:
 
