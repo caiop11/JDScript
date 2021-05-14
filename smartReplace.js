@@ -29,7 +29,7 @@ async function inject_jd() {
         });
     }
     ignore_jd();
-    await downloader_jd();
+    //await downloader_jd();
     await downloader_notify();
     await downloader_user_agents();
 }
