@@ -37,7 +37,6 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {
   };
-  if (JSON.stringify(process.env).indexOf('GITHUB') > -1) process.exit(0)
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
@@ -240,7 +239,7 @@ async function retryCdn(code, url) {
 }
 
 function rraUrl() {
-  let url = 'https://raw.githubusercontent.com/nianyuguai/longzhuzhu/main/qx/jd-half-rain.json'
+  let url = 'https://cdn.jsdelivr.net/gh/nianyuguai/longzhuzhu@main/qx/jd-half-rain.json'
   if($.isNode() && process.env.JD_HALF_RRA_URL){
     url = process.env.JD_HALF_RRA_URL
   }else if($.getdata('jdHalfRRAUrl')){
