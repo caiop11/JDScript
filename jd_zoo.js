@@ -569,7 +569,7 @@ function qryViewkitCallbackResult(taskBody,timeout = 0) {
 
 //群组助力
 function zoo_pk_assistGroup(inviteId = "",timeout = 0) {
-  return new Promise((resolve) => {
+  return /*new Promise((resolve) => {
     let rnd = Math.round(Math.random()*1e6)
     let nonstr = randomWord(false,10)
     let time = Date.now()
@@ -584,7 +584,7 @@ function zoo_pk_assistGroup(inviteId = "",timeout = 0) {
           'Origin' : `https://wbbny.m.jd.com`,
           'Cookie' : cookie,
           'Connection' : `keep-alive`,
-          'Accept' : `application/json, text/plain, */*`,
+          'Accept' : `application/json, text/plain, *!/!*`,
           'Host' : `api.m.jd.com`,
           'User-Agent' : `jdapp;iPhone;9.2.6;14.1;`,
           'Accept-Encoding' : `gzip, deflate, br`,
@@ -605,7 +605,7 @@ function zoo_pk_assistGroup(inviteId = "",timeout = 0) {
         }
       })
     },timeout)
-  })
+  })*/ null;
 }
 
 //获取首页信息
