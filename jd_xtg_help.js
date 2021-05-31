@@ -1,10 +1,4 @@
 /*
- * @Author: LXK9301
- * @Date: 2020-10-21 17:04:04
- * @Last Modified by: LXK9301
- * @Last Modified time: 2021-05-27 19:15:04
- */
-/*
 家电星推官好友互助脚本
 家电星推官活动地址：https://3.cn/-1eD1VOa?_ts=1622072397979&utm_source=iosapp&utm_medium=appshare&utm_campaign=t_335139774&utm_term=CopyURL&ad_od=share&gx=RnFtxGZZPTONndRP--twDLBLeC4DoX3_2wf2
 活动时间：2021年5月27日 00:00:00-2021年6月18日 23:59:59
@@ -14,17 +8,17 @@
 ============Quantumultx===============
 [task_local]
 #家电星推官好友互助
-0 0 0 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_xtg_help.js, tag=家电星推官好友互助, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+0 0 0 * * * https://jdsharedresourcescdn.azureedge.net/jdresource/jd_xtg_help.js, tag=家电星推官好友互助, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "0 0 0 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_xtg_help.js,tag=家电星推官好友互助
+cron "0 0 0 * * *" script-path=https://jdsharedresourcescdn.azureedge.net/jdresource/jd_xtg_help.js,tag=家电星推官好友互助
 
 ===============Surge=================
-家电星推官好友互助 = type=cron,cronexp="0 0 0 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_xtg_help.js
+家电星推官好友互助 = type=cron,cronexp="0 0 0 * * *",wake-system=1,timeout=3600,script-path=https://jdsharedresourcescdn.azureedge.net/jdresource/jd_xtg_help.js
 
 ============小火箭=========
-家电星推官好友互助 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_xtg_help.js, cronexpr="0 0 0 * * *", timeout=3600, enable=true
+家电星推官好友互助 = type=cron,script-path=https://jdsharedresourcescdn.azureedge.net/jdresource/jd_xtg_help.js, cronexpr="0 0 0 * * *", timeout=3600, enable=true
  */
 const $ = new Env("家电星推官好友互助");
 const activeEndTime = "2021/06/18 23:59:59+08:00"; //活动结束时间
@@ -68,7 +62,7 @@ const JD_API_HOST = "https://guardianstarjd.m.jd.com/star";
   }
   cookie = cookiesArr[0];
   await starRanking();
-  
+
   //助力功能
   for (let index = 0; index < starID.length; index++) {
     $.invites = [];
@@ -91,7 +85,7 @@ const JD_API_HOST = "https://guardianstarjd.m.jd.com/star";
     cookie = cookiesArr[v];
     $.index = v + 1;
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
-    
+
     for (let oneAppId in $.allShareId) {
       let oneAcHelpList = $.allShareId[oneAppId];
       for (let j = 0; j < oneAcHelpList.length; j++) {
