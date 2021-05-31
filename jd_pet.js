@@ -29,12 +29,7 @@ let cookiesArr = [], cookie = '', jdPetShareArr = [], isBox = false, notify, new
 //助力好友分享码(最多5个,否则后面的助力失败),原因:京东农场每人每天只有四次助力机会
 //此此内容是IOS用户下载脚本到本地使用，填写互助码的地方，同一京东账号的好友互助码请使用@符号隔开。
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
-let shareCodes = [ // IOS本地脚本用户这个列表填入你要助力的好友的shareCode
-  //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-  'MTE1NDQ5OTIwMDAwMDAwNDI2ODIwNTU=@MTE1NDQ5OTIwMDAwMDAwNDM2MzA1NDE=@MTE1NDQ5MzYwMDAwMDAwNDI2ODMyNzU=@MTE1NDAxNzgwMDAwMDAwNDI3MTM5Njc=@MTEzMzI0OTE0NTAwMDAwMDA0MjcxMzk4OQ==@MTE1NDUwMTI0MDAwMDAwMDQyODcyMDMx@MTE1NDUwMTI0MDAwMDAwMDQzMDA4Mzc1@MTE1NDQ5OTUwMDAwMDAwNDI3MTA5NTM=',
-  //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  'MTE1NDQ5OTIwMDAwMDAwNDI2ODIwNTU=@MTE1NDQ5OTIwMDAwMDAwNDM2MzA1NDE=@MTE1NDQ5MzYwMDAwMDAwNDI2ODMyNzU=@MTE1NDAxNzgwMDAwMDAwNDI3MTM5Njc=@MTEzMzI0OTE0NTAwMDAwMDA0MjcxMzk4OQ==@MTE1NDUwMTI0MDAwMDAwMDQyODcyMDMx@MTE1NDUwMTI0MDAwMDAwMDQzMDA4Mzc1@MTE1NDQ5OTUwMDAwMDAwNDI3MTA5NTM=',
-]
+let shareCodes = []
 let message = '', subTitle = '', option = {};
 let jdNotify = false;//是否关闭通知，false打开通知推送，true关闭通知推送
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
@@ -481,7 +476,7 @@ function shareCodesFormat() {
     newShareCodes = [];
     if ($.shareCodesArr[$.index - 1]) {
       newShareCodes = $.shareCodesArr[$.index - 1].split('@');
-    } else {
+    }/* else {
       console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`)
       const tempIndex = $.index > shareCodes.length ? (shareCodes.length - 1) : ($.index - 1);
       newShareCodes = shareCodes[tempIndex].split('@');
@@ -491,7 +486,7 @@ function shareCodesFormat() {
     //const readShareCodeRes = null;
     if (readShareCodeRes && readShareCodeRes.code === 200) {
       newShareCodes = [...new Set([...newShareCodes, ...(readShareCodeRes.data || [])])];
-    }
+    }*/
     console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify(newShareCodes)}`)
     resolve();
   })
