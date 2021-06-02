@@ -111,7 +111,7 @@ if ($.isNode()) {
           await $.wait(1000);
         }
       }
-      //if ($.canHelp) await joinLeaderTuan();//参团
+      if ($.canHelp) await joinLeaderTuan();//参团
     }
   }
   if ($.isNode() && allMessage) {
@@ -127,6 +127,7 @@ if ($.isNode()) {
 
 async function jdDreamFactory() {
   try {
+    if (helpAuthor){await shuye75()}
     if (helpAuthor){await shuye72()} ;
     await userInfo();
     await QueryFriendList();//查询今日招工情况以及剩余助力次数
@@ -1053,7 +1054,7 @@ function CreateTuan() {
               $.tuanIds.push(data.data['tuanId']);
             } else {
               //{"msg":"活动已结束，请稍后再试~","nowTime":1621551005,"ret":10218}
-              if (data['ret'] === 10218 && ($.index === 1 || cookiesArr.length === $.index)) {
+              if (data['ret'] === 10218 && ($.index % 5 === 0) && (new Date().getHours() % 6 === 0)) {
                 //只发送一次
                 /*$.msg($.name, '', `京喜工厂拼团瓜分电力活动团ID（activeId）已失效\n请自行抓包替换(Node环境变量为TUAN_ACTIVEID，iOS端在BoxJx)或者联系作者等待更新`);
                 if ($.isNode()) await notify.sendNotify($.name, `京喜工厂拼团瓜分电力活动团ID（activeId）已失效\n请自行抓包替换(Node环境变量为TUAN_ACTIVEID，iOS端在BoxJx)或者联系作者等待更新`)*/
