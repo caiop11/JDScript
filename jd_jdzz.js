@@ -39,8 +39,8 @@ if ($.isNode()) {
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const inviteCodes = [
-    `ACjVSmK-QzzYAFWX83XxNnQ@S5KkcH1lQpB6qW3uX06Fu@ACjBfn6iTzTYBAGaXnQ@A3avtRgYKGqKz3e15@A373QSgwwGJOy3Oh-CfTM@S5KkcRBoRp1SEJBP1nKIDdg@S5KkcRR1K8wXXJxKiwaIIdA@Sv_h6Rhof_FzTIxyb1A@S5KkcNmJNlxOBRUCU9axO@A06fNRgYIG7Kz3ul3Ctb-Q-ggGzUB`,
-    `ACjVSmK-QzzYAFWX83XxNnQ@S5KkcH1lQpB6qW3uX06Fu@ACjBfn6iTzTYBAGaXnQ@A3avtRgYKGqKz3e15@A373QSgwwGJOy3Oh-CfTM@S5KkcRBoRp1SEJBP1nKIDdg@S5KkcRR1K8wXXJxKiwaIIdA@Sv_h6Rhof_FzTIxyb1A@S5KkcNmJNlxOBRUCU9axO@A06fNRgYIG7Kz3ul3Ctb-Q-ggGzUB`,
+  `ACjVSmK-QzzYAFWX83XxNnQ@S5KkcH1lQpB6qW3uX06Fu@ACjBfn6iTzTYBAGaXnQ@A3avtRgYKGqKz3e15@A373QSgwwGJOy3Oh-CfTM@S5KkcRBoRp1SEJBP1nKIDdg@S5KkcRR1K8wXXJxKiwaIIdA@Sv_h6Rhof_FzTIxyb1A@S5KkcNmJNlxOBRUCU9axO@A06fNRgYIG7Kz3ul3Ctb-Q-ggGzUB`,
+  `ACjVSmK-QzzYAFWX83XxNnQ@S5KkcH1lQpB6qW3uX06Fu@ACjBfn6iTzTYBAGaXnQ@A3avtRgYKGqKz3e15@A373QSgwwGJOy3Oh-CfTM@S5KkcRBoRp1SEJBP1nKIDdg@S5KkcRR1K8wXXJxKiwaIIdA@Sv_h6Rhof_FzTIxyb1A@S5KkcNmJNlxOBRUCU9axO@A06fNRgYIG7Kz3ul3Ctb-Q-ggGzUB`,
 ]
 let nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000);
 !(async () => {
@@ -78,12 +78,12 @@ let nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 
     }
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 
 async function jdWish() {
   $.bean = 0
@@ -227,9 +227,9 @@ async function helpFriends() {
 function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
-        $.get({url: `https://cdn.jsdelivr.net/gh/wuzhi-docker1/RandomShareCode@main/JD_Jdzz.json`,headers:{
-          "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-        }, 'timeout': 10000}, (err, resp, data) => {
+    $.get({url: `https://wuzhi03.coding.net/p/dj/d/RandomShareCode/git/raw/main/JD_Jdzz.json`,headers:{
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }, 'timeout': 10000}, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
