@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: jd_flipcards-翻翻乐
+name: jd_big_winner-翻翻乐
 
 on:
     workflow_dispatch:
@@ -10,7 +10,7 @@ on:
     watch:
         types: [started]
     repository_dispatch:
-        types: jd_flipcards
+        types: jd_big_winner
 
 jobs:
     build:
@@ -26,9 +26,9 @@ jobs:
             - name: 安装依赖包
               run: |
                   npm install
-            - name: "运行【翻翻乐】"
+            - name: "运行【省钱翻翻乐】"
               run: |
-                  node jd_flipcards.js
+                  node jd_big_winner.js
               env:
                   JD_COOKIE: ${{ github.event.client_payload.JD_COOKIE || secrets.JD_COOKIE }}
                   JD_DEBUG: ${{ github.event.client_payload.JD_DEBUG || secrets.JD_DEBUG }}

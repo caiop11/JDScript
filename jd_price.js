@@ -18,17 +18,17 @@ iOS同时支持使用 NobyDa 与 domplin 脚本的京东 cookie
 ============Quantumultx===============
 [task_local]
 #京东保价
-0 2 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_price.js, tag=京东保价, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png, enabled=true
+0 2 * * * jd_price.js, tag=京东保价, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "0 2 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_price.js,tag=京东保价
+cron "0 2 * * *" script-path=jd_price.js,tag=京东保价
 
 ===============Surge=================
-京东保价 = type=cron,cronexp="0 2 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_price.js
+京东保价 = type=cron,cronexp="0 2 * * *",wake-system=1,timeout=3600,script-path=jd_price.js
 
 ============小火箭=========
-京东保价 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_price.js, cronexpr="0 2 * * *", timeout=3600, enable=true
+京东保价 = type=cron,script-path=jd_price.js, cronexpr="0 2 * * *", timeout=3600, enable=true
  */
 
 const $ = new Env('京东保价');
@@ -49,12 +49,12 @@ if ($.isNode()) {
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg(
-      $.name,
-      '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取',
-      'https://bean.m.jd.com/',
-      {
-        'open-url': 'https://bean.m.jd.com/',
-      }
+        $.name,
+        '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取',
+        'https://bean.m.jd.com/',
+        {
+          'open-url': 'https://bean.m.jd.com/',
+        }
     );
     return;
   }
@@ -62,7 +62,7 @@ if ($.isNode()) {
     if (cookiesArr[i]) {
       $.cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(
-        $.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]
+          $.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]
       );
       $.index = i + 1;
       $.isLogin = false;
@@ -70,21 +70,21 @@ if ($.isNode()) {
       await totalBean();
       if (!$.isLogin) {
         $.msg(
-          $.name,
-          `【提示】cookie已失效`,
-          `京东账号${$.index} ${
-            $.nickName || $.UserName
-          }\n请重新登录获取\nhttps://bean.m.jd.com/`,
-          {
-            'open-url': 'https://bean.m.jd.com/',
-          }
+            $.name,
+            `【提示】cookie已失效`,
+            `京东账号${$.index} ${
+                $.nickName || $.UserName
+            }\n请重新登录获取\nhttps://bean.m.jd.com/`,
+            {
+              'open-url': 'https://bean.m.jd.com/',
+            }
         );
         continue;
       }
       console.log(
-        `\n***********开始【账号${$.index}】${
-          $.nickName || $.UserName
-        }********\n`
+          `\n***********开始【账号${$.index}】${
+              $.nickName || $.UserName
+          }********\n`
       );
       try {
         $.hasNext = true;
@@ -133,10 +133,10 @@ if ($.isNode()) {
     }
   }
 })()
-  .catch((e) => {
-    console.log(`❗️ ${$.name} 运行错误！\n${e}`);
-  })
-  .finally(() => $.done());
+    .catch((e) => {
+      console.log(`❗️ ${$.name} 运行错误！\n${e}`);
+    })
+    .finally(() => $.done());
 
 const getValueById = function (text, id) {
   try {
@@ -155,11 +155,11 @@ function getHyperParams() {
       headers: {
         Host: 'msitepp-fm.jd.com',
         Accept:
-          'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         Connection: 'keep-alive',
         Cookie: $.cookie,
         'User-Agent':
-          'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
         'Accept-Language': 'zh-cn',
         Referer: 'https://ihelp.jd.com/',
         'Accept-Encoding': 'gzip, deflate, br',
@@ -172,13 +172,13 @@ function getHyperParams() {
           sid_hid: getValueById(data, 'sid_hid'),
           type_hid: getValueById(data, 'type_hid'),
           isLoadLastPropriceRecord: getValueById(
-            data,
-            'isLoadLastPropriceRecord'
+              data,
+              'isLoadLastPropriceRecord'
           ),
           isLoadSkuPrice: getValueById(data, 'isLoadSkuPrice'),
           RefundType_Orderid_Repeater_hid: getValueById(
-            data,
-            'RefundType_Orderid_Repeater_hid'
+              data,
+              'RefundType_Orderid_Repeater_hid'
           ),
           isAlertSuccessTip: getValueById(data, 'isAlertSuccessTip'),
           forcebot: getValueById(data, 'forcebot'),
@@ -186,9 +186,9 @@ function getHyperParams() {
         };
       } catch (e) {
         reject(
-          `⚠️ ${arguments.callee.name.toString()} API返回结果解析出错\n${e}\n${JSON.stringify(
-            data
-          )}`
+            `⚠️ ${arguments.callee.name.toString()} API返回结果解析出错\n${e}\n${JSON.stringify(
+                data
+            )}`
         );
       } finally {
         resolve();
@@ -218,19 +218,19 @@ function getApplyData(page) {
       try {
         if (err) {
           console.log(
-            `🚫 ${arguments.callee.name.toString()} API请求失败，请检查网路\n${JSON.stringify(
-              err
-            )}`
+              `🚫 ${arguments.callee.name.toString()} API请求失败，请检查网路\n${JSON.stringify(
+                  err
+              )}`
           );
         } else {
           let pageErrorVal = data.match(
-            /id="pageError_\d+" name="pageError_\d+" value="(.*?)"/
+              /id="pageError_\d+" name="pageError_\d+" value="(.*?)"/
           )[1];
           if (pageErrorVal == 'noexception') {
             let pageDatasSize = eval(
-              data.match(
-                /id="pageSize_\d+" name="pageSize_\d+" value="(.*?)"/
-              )[1]
+                data.match(
+                    /id="pageSize_\d+" name="pageSize_\d+" value="(.*?)"/
+                )[1]
             );
             $.hasNext = pageDatasSize >= pageSize;
             let orders = [...data.matchAll(/skuApply\((.*?)\)/g)];
@@ -253,8 +253,8 @@ function getApplyData(page) {
               if (isfujian == 'false') {
                 let skuRefundTypeDiv_orderId = `skuRefundTypeDiv_${item.orderId}`;
                 item['refundtype'] = getValueById(
-                  data,
-                  skuRefundTypeDiv_orderId
+                    data,
+                    skuRefundTypeDiv_orderId
                 );
                 // 设置原路返还
                 if (item.refundtype === '2') item.refundtype = '1';
@@ -266,9 +266,9 @@ function getApplyData(page) {
         }
       } catch (e) {
         reject(
-          `⚠️ ${arguments.callee.name.toString()} API返回结果解析出错\n${e}\n${JSON.stringify(
-            data
-          )}`
+            `⚠️ ${arguments.callee.name.toString()} API返回结果解析出错\n${e}\n${JSON.stringify(
+                data
+            )}`
         );
       } finally {
         resolve();
@@ -300,9 +300,9 @@ function skuApply(order) {
       try {
         if (err) {
           console.log(
-            `🚫 ${arguments.callee.name.toString()} API请求失败，请检查网路\n${JSON.stringify(
-              err
-            )}`
+              `🚫 ${arguments.callee.name.toString()} API请求失败，请检查网路\n${JSON.stringify(
+                  err
+              )}`
           );
         } else {
           data = JSON.parse(data);
@@ -316,9 +316,9 @@ function skuApply(order) {
         }
       } catch (e) {
         reject(
-          `⚠️ ${arguments.callee.name.toString()} API返回结果解析出错\n${e}\n${JSON.stringify(
-            data
-          )}`
+            `⚠️ ${arguments.callee.name.toString()} API返回结果解析出错\n${e}\n${JSON.stringify(
+                data
+            )}`
         );
       } finally {
         resolve();
@@ -344,25 +344,25 @@ function historyResultQuery(order) {
     };
 
     const reg = new RegExp(
-      'overTime|[^库]不支持价保|无法申请价保|请用原订单申请'
+        'overTime|[^库]不支持价保|无法申请价保|请用原订单申请'
     );
     let deleted = true;
     $.post(taskUrl('siteppM_skuProResultPin', paramObj), (err, resp, data) => {
       try {
         if (err) {
           console.log(
-            `🚫 ${arguments.callee.name.toString()} API请求失败，请检查网路\n${JSON.stringify(
-              err
-            )}`
+              `🚫 ${arguments.callee.name.toString()} API请求失败，请检查网路\n${JSON.stringify(
+                  err
+              )}`
           );
         } else {
           deleted = reg.test(data);
         }
       } catch (e) {
         reject(
-          `⚠️ ${arguments.callee.name.toString()} API返回结果解析出错\n${e}\n${JSON.stringify(
-            data
-          )}`
+            `⚠️ ${arguments.callee.name.toString()} API返回结果解析出错\n${e}\n${JSON.stringify(
+                data
+            )}`
         );
       } finally {
         if (deleted) {
@@ -380,8 +380,8 @@ function historyResultQuery(order) {
 function getApplyResult() {
   function handleApplyResult(ajaxResultObj) {
     if (
-      ajaxResultObj.hasResult != 'undefined' &&
-      ajaxResultObj.hasResult == true
+        ajaxResultObj.hasResult != 'undefined' &&
+        ajaxResultObj.hasResult == true
     ) {
       //有结果了
       let proSkuApplyId = ajaxResultObj.applyResultVo.proSkuApplyId; //申请id
@@ -391,12 +391,12 @@ function getApplyResult() {
         //价保成功
         $.refundtotalamount += ajaxResultObj.applyResultVo.refundtotalamount;
         console.log(
-          `📋 ${order.title} \n🟢 申请成功：￥${$.refundtotalamount}`
+            `📋 ${order.title} \n🟢 申请成功：￥${$.refundtotalamount}`
         );
         console.log(`-----`);
       } else {
         console.log(
-          `📋 ${order.title} \n🔴 申请失败：${ajaxResultObj.applyResultVo.failTypeStr} \n🔴 失败类型:${ajaxResultObj.applyResultVo.failType}`
+            `📋 ${order.title} \n🔴 申请失败：${ajaxResultObj.applyResultVo.failTypeStr} \n🔴 失败类型:${ajaxResultObj.applyResultVo.failType}`
         );
         console.log(`-----`);
       }
@@ -416,9 +416,9 @@ function getApplyResult() {
       try {
         if (err) {
           console.log(
-            `🚫 ${arguments.callee.name.toString()} API请求失败，请检查网路\n${JSON.stringify(
-              err
-            )}`
+              `🚫 ${arguments.callee.name.toString()} API请求失败，请检查网路\n${JSON.stringify(
+                  err
+              )}`
           );
         } else if (data) {
           data = JSON.parse(data);
@@ -430,9 +430,9 @@ function getApplyResult() {
         }
       } catch (e) {
         reject(
-          `⚠️ ${arguments.callee.name.toString()} API返回结果解析出错\n${e}\n${JSON.stringify(
-            data
-          )}`
+            `⚠️ ${arguments.callee.name.toString()} API返回结果解析出错\n${e}\n${JSON.stringify(
+                data
+            )}`
         );
       } finally {
         resolve();
@@ -447,13 +447,13 @@ function taskUrl(functionid, body) {
 
   if (useColorApi == 'true') {
     urlStr =
-      unifiedGatewayName +
-      'api?appid=siteppM&functionId=' +
-      functionid +
-      '&forcebot=' +
-      forcebot +
-      '&t=' +
-      new Date().getTime();
+        unifiedGatewayName +
+        'api?appid=siteppM&functionId=' +
+        functionid +
+        '&forcebot=' +
+        forcebot +
+        '&t=' +
+        new Date().getTime();
   }
   return {
     url: urlStr,
@@ -467,7 +467,7 @@ function taskUrl(functionid, body) {
       Connection: 'keep-alive',
       Referer: 'https://msitepp-fm.jd.com/rest/priceprophone/priceProPhoneMenu',
       'User-Agent':
-        'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
       Cookie: $.cookie,
     },
     body: body ? `body=${JSON.stringify(body)}` : undefined,
@@ -478,15 +478,15 @@ function showMsg() {
   console.log(`🧮 本次价格保护金额：${$.refundtotalamount}💰`);
   if ($.refundtotalamount) {
     $.msg(
-      $.name,
-      ``,
-      `京东账号${$.index} ${$.nickName || $.UserName}\n🎉 本次价格保护金额：${
-        $.refundtotalamount
-      }💰`,
-      {
-        'open-url':
-          'https://msitepp-fm.jd.com/rest/priceprophone/priceProPhoneMenu',
-      }
+        $.name,
+        ``,
+        `京东账号${$.index} ${$.nickName || $.UserName}\n🎉 本次价格保护金额：${
+            $.refundtotalamount
+        }💰`,
+        {
+          'open-url':
+              'https://msitepp-fm.jd.com/rest/priceprophone/priceProPhoneMenu',
+        }
     );
   }
 }
@@ -504,7 +504,7 @@ function totalBean() {
         Cookie: $.cookie,
         Referer: 'https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2',
         'User-Agent':
-          'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
       },
     };
     $.post(options, (err, resp, data) => {
@@ -520,7 +520,7 @@ function totalBean() {
             }
             $.isLogin = true;
             if (data['retcode'] === 0) {
-              $.nickName = data['base'].nickname;
+              $.nickName = (data['base'] && data['base'].nickname) || $.UserName;
             } else {
               $.nickName = $.UserName
             }
@@ -544,9 +544,9 @@ function jsonParse(str) {
     } catch (e) {
       console.log(e);
       $.msg(
-        $.name,
-        '',
-        '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie'
+          $.name,
+          '',
+          '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie'
       );
       return [];
     }
