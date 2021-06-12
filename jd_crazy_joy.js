@@ -29,7 +29,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
 
 const notify = $.isNode() ? require('./sendNotify') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
-let helpSelf = false // 循环助力，默认关闭
+let helpSelf = true // 循环助力，默认关闭
 let applyJdBean = 0; //疯狂的JOY京豆兑换，目前最小值为2000京豆，默认为 0 不开启京豆兑换
 let cookiesArr = [], cookie = '', message = '';
 const inviteCodes = [
@@ -764,21 +764,6 @@ function requireConfig() {
     console.log(`开始获取${$.name}配置文件\n`);
     //Node.js用户请在jdCookie.js处填写京东ck;
     let shareCodes = [];
-    if ($.isNode()) {
-      if (process.env.JDJOY_SHARECODES) {
-        if (process.env.JDJOY_SHARECODES.indexOf('\n') > -1) {
-          shareCodes = process.env.JDJOY_SHARECODES.split('\n');
-        } else {
-          shareCodes = process.env.JDJOY_SHARECODES.split('&');
-        }
-      }
-      if (process.env.JDJOY_HELPSELF) {
-        helpSelf = process.env.JDJOY_HELPSELF
-      }
-      if (process.env.JDJOY_APPLYJDBEAN) {
-        applyJdBean = process.env.JDJOY_APPLYJDBEAN
-      }
-    }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
     if ($.isNode()) {

@@ -725,21 +725,6 @@ function requireConfig() {
       'dfd41ad40a584ed3ae9a3a61c8f8252c@599d0896105249b69a14fbf05d06d176@74e12bdb37cf4538a8c2bc5f8456b0aa@07effdbdb66143ed9ed5bfe3bb21a8b6@fc1f90bf6c684125a9241bf88d18324a',
 
     ];
-    if ($.isNode()) {
-      //自定义助力码
-      if (process.env.BOOKSHOP_SHARECODES) {
-        if (process.env.BOOKSHOP_SHARECODES.indexOf('\n') > -1) {
-          shareCodes = process.env.BOOKSHOP_SHARECODES.split('\n');
-        } else {
-          shareCodes = process.env.BOOKSHOP_SHARECODES.split('&');
-        }
-      }
-      Object.keys(shareCodes).forEach((item) => {
-        if (shareCodes[item]) {
-          $.shareCodesArr.push(shareCodes[item])
-        }
-      })
-    }
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
     resolve()
   })

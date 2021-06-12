@@ -308,13 +308,6 @@ function requireConfig() {
 
     ]
     console.log(`共${cookiesArr.length}个京东账号\n`);
-    if ($.isNode() && process.env.JDSGMH_SHARECODES) {
-      if (process.env.JDSGMH_SHARECODES.indexOf('\n') > -1) {
-        shareCodes = process.env.JDSGMH_SHARECODES.split('\n');
-      } else {
-        shareCodes = process.env.JDSGMH_SHARECODES.split('&');
-      }
-    }
     $.shareCodesArr = [];
     if ($.isNode()) {
       Object.keys(shareCodes).forEach((item) => {

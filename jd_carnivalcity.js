@@ -837,15 +837,6 @@ function requireConfig() {
       'c1f4d888-17b1-45e5-bcb4-c297cb7e3735@4d2b5728-5df0-4b0e-a865-d2b333afc5df@a25c885d-39b7-4d1f-9a7d-1ffd247a10b6',
 
     ];
-    if ($.isNode()) {
-      if (process.env.JD818_SHARECODES) {
-        if (process.env.JD818_SHARECODES.indexOf('\n') > -1) {
-          shareCodes = process.env.JD818_SHARECODES.split('\n');
-        } else {
-          shareCodes = process.env.JD818_SHARECODES.split('&');
-        }
-      }
-    }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
     if ($.isNode()) {

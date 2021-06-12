@@ -443,15 +443,6 @@ function requireConfig() {
       'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
 
     ];
-    if ($.isNode()) {
-      if (process.env.JD_CASH_SHARECODES) {
-        if (process.env.JD_CASH_SHARECODES.indexOf('\n') > -1) {
-          shareCodes = process.env.JD_CASH_SHARECODES.split('\n');
-        } else {
-          shareCodes = process.env.JD_CASH_SHARECODES.split('&');
-        }
-      }
-    }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
     if ($.isNode()) {
