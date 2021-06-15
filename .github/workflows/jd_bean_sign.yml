@@ -6,11 +6,7 @@ name: jd_bean_sign-京豆签到
 on:
   workflow_dispatch:
   schedule:
-<<<<<<< HEAD
-    - cron: '3 18 * * *'
-=======
     - cron: '58 15 * * *'
->>>>>>> ada07735d2fef9e792db982fe23a49361720caea
   watch:
     types: started
   repository_dispatch:
@@ -56,4 +52,3 @@ jobs:
           DD_BOT_TOKEN: ${{ secrets.DD_BOT_TOKEN }}
           DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}
           IGOT_PUSH_KEY: ${{ secrets.IGOT_PUSH_KEY }}
-          QYWX_AM: ${{ secrets.QYWX_AM }}

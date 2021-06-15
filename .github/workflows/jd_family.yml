@@ -48,9 +48,4 @@ jobs:
           BARK_SOUND: ${{ secrets.BARK_SOUND }}
           DD_BOT_TOKEN: ${{ secrets.DD_BOT_TOKEN }}
           DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}
-<<<<<<< HEAD:.github/workflows/jd_nzmh.yml
           IGOT_PUSH_KEY: ${{ secrets.IGOT_PUSH_KEY }}
-          QYWX_AM: ${{ secrets.QYWX_AM }}
-=======
-          IGOT_PUSH_KEY: ${{ secrets.IGOT_PUSH_KEY }}
->>>>>>> ada07735d2fef9e792db982fe23a49361720caea:.github/workflows/jd_family.yml
