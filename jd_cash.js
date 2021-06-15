@@ -26,11 +26,13 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
-let helpAuthor = true;
-const randomCount = 0 ;
+let helpAuthor = false;
+const randomCount = $.isNode() ? 20 : 5;
+let t = +new Date()
+let cash_exchange = true;//是否消耗2元红包兑换200京豆，默认否
 const inviteCodes = [
-  `Kxg3a-WzZf4mnm_XznER0lBgZg@eU9Yae_nMq9z8TrcwiAQ1g@eU9Yau20b6lw9z_UzyYU1Q@eU9Yauq0YfRypGrQn3oQgg@ZFhrJLT3Pw@eU9YaLq7N_gmpGzcniES0Q@cEpoNrXjLqV48g@eU9YLrnEGYFMmBCWvDlT@YBo0ae-zZPQn927SynoT1g4@eU9Yabm3MPgm92fRzXVCgg@eU9Yarm1Mqh19D_WmXVF1w@eU9Yaum6ZPUjpWbXn3RFgw@eU9YabizY61yoGqAmnNBhA@cEc-b-yz`,
-  `Kxg3a-WzZf4mnm_XznER0lBgZg@eU9Yae_nMq9z8TrcwiAQ1g@eU9Yau20b6lw9z_UzyYU1Q@eU9Yauq0YfRypGrQn3oQgg@ZFhrJLT3Pw@eU9YaLq7N_gmpGzcniES0Q@cEpoNrXjLqV48g@eU9YLrnEGYFMmBCWvDlT@YBo0ae-zZPQn927SynoT1g4@eU9Yabm3MPgm92fRzXVCgg@eU9Yarm1Mqh19D_WmXVF1w@eU9Yaum6ZPUjpWbXn3RFgw@eU9YabizY61yoGqAmnNBhA@cEc-b-yz`,
+  ``,
+  ``
 ]
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -49,11 +51,10 @@ let allMessage = '';
   }
   await requireConfig()
   await getAuthorShareCode();
-  await getAuthorShareCode2();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
-      $.UserName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1])
+      $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = '';
@@ -72,7 +73,7 @@ let allMessage = '';
     }
   }
   if (allMessage) {
-   // if ($.isNode()) await notify.sendNotify($.name, allMessage);
+    if ($.isNode() && (process.env.CASH_NOTIFY_CONTROL ? process.env.CASH_NOTIFY_CONTROL === 'false' : !!1)) await notify.sendNotify($.name, allMessage);
     $.msg($.name, '', allMessage);
   }
 })()
@@ -87,9 +88,33 @@ async function jdCash() {
   await shareCodesFormat()
   await helpFriends()
   await getReward()
-  await getReward('2')
+  await getReward('2');
+  $.exchangeBeanNum = 0;
+  cash_exchange = $.isNode() ? (process.env.CASH_EXCHANGE ? process.env.CASH_EXCHANGE : `${cash_exchange}`) : ($.getdata('cash_exchange') ? $.getdata('cash_exchange') : `${cash_exchange}`);
+  if (cash_exchange === 'true') {
+    if(Number($.signMoney) >= 2){
+      console.log(`\n\n开始花费2元红包兑换200京豆，一周可换五次`)
+      for (let item of ["-1", "0", "1", "2", "3"]) {
+        $.canLoop = true;
+        if ($.canLoop) {
+          for (let i = 0; i < 5; i++) {
+            await exchange2(item);//兑换200京豆(2元红包换200京豆，一周5次。)
+          }
+          if (!$.canLoop) {
+            console.log(`已找到符合的兑换条件，跳出\n`);
+            break
+          }
+        }
+      }
+      if ($.exchangeBeanNum) {
+        message += `兑换京豆成功，获得${$.exchangeBeanNum * 100}京豆\n`;
+      }
+    }else{
+      console.log(`\n\n现金不够2元，不进行兑换200京豆，`)
+    }
+  }
   await index(true)
-  await showMsg()
+  // await showMsg()
 }
 function index(info=false) {
   return new Promise((resolve) => {
@@ -103,11 +128,16 @@ function index(info=false) {
             data = JSON.parse(data);
             if(data.code===0 && data.data.result){
               if(info){
-                message += `当前现金：${data.data.result.signMoney}元`
+                if (message) {
+                  message += `当前现金：${data.data.result.signMoney}元`;
+                  allMessage += `京东账号${$.index}${$.nickName}\n${message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
+                }
+                console.log(`\n\n当前现金：${data.data.result.signMoney}元`);
                 return
               }
-              // console.log(`您的助力码为${data.data.result.inviteCode}`)
-              console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}好友互助码】${data.data.result.inviteCode}\n`);
+              $.signMoney = data.data.result.signMoney;
+              //console.log(`您的助力码为${data.data.result.inviteCode}`)
+              console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data.result.inviteCode}\n`);
               let helpInfo = {
                 'inviteCode': data.data.result.inviteCode,
                 'shareDate': data.data.result.shareDate
@@ -233,7 +263,7 @@ function getReward(source = 1) {
             data = JSON.parse(data);
             if (data.code === 0 && data.data.bizCode === 0) {
               console.log(`领奖成功，${data.data.result.shareRewardTip}【${data.data.result.shareRewardAmount}】`)
-              allMessage += `京东账号${$.index}${$.nickName}\n领奖成功，${data.data.result.shareRewardTip}【${data.data.result.shareRewardAmount}】\n${message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
+              message += `领奖成功，${data.data.result.shareRewardTip}【${data.data.result.shareRewardAmount}元】\n`;
               // console.log(data.data.result.taskInfos)
             } else {
               // console.log(`领奖失败，${data.data.bizMsg}`)
@@ -248,7 +278,65 @@ function getReward(source = 1) {
     })
   })
 }
-
+function exchange2(node) {
+  let body = '';
+  const data = {node,"configVersion":"1.0"}
+  if (data['node'] === '-1') {
+    body = `body=${encodeURIComponent(JSON.stringify(data))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1619595890027&sign=92a8abba7b6846f274ac9803aa5a283d&sv=102`;
+  } else if (data['node'] === '0') {
+    body = `body=${encodeURIComponent(JSON.stringify(data))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1619597882090&sign=e00bd6c3af2a53820825b94f7a648551&sv=100`;
+  } else if (data['node'] === '1') {
+    body = `body=${encodeURIComponent(JSON.stringify(data))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1619595655007&sign=2e72bbd21e5f5775fe920eac129f89a2&sv=111`;
+  } else if (data['node'] === '2') {
+    body = `body=${encodeURIComponent(JSON.stringify(data))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1619597924095&sign=c04c70370ff68d71890de08a18cac981&sv=112`;
+  } else if (data['node'] === '3') {
+    body = `body=${encodeURIComponent(JSON.stringify(data))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1619597953001&sign=4c36b3d816d4f0646b5c34e7596502f8&sv=122`;
+  }
+  return new Promise((resolve) => {
+    const options = {
+      url: `${JD_API_HOST}?functionId=cash_exchangeBeans&t=${Date.now()}&${body}`,
+      body: `body=${escape(JSON.stringify(data))}`,
+      headers: {
+        'Cookie': cookie,
+        'Host': 'api.m.jd.com',
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
+        'Accept-Language': 'zh-cn',
+        'Accept-Encoding': 'gzip, deflate, br',
+      }
+    }
+    $.post(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          if (safeGet(data)) {
+            data = JSON.parse(data);
+            if (data['code'] === 0) {
+              if (data.data.bizCode === 0) {
+                console.log(`花费${data.data.result.needMoney}元红包兑换成功！获得${data.data.result.beanName}\n`)
+                $.exchangeBeanNum += parseInt(data.data.result.needMoney);
+                $.canLoop = false;
+              } else {
+                console.log('花费2元红包兑换200京豆失败：' + data.data.bizMsg)
+                if (data.data.bizCode === 504) $.canLoop = true;
+                if (data.data.bizCode === 120) $.canLoop = false;
+              }
+            } else {
+              console.log(`兑换京豆失败：${JSON.stringify(data)}\n`);
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
 function showMsg() {
   return new Promise(resolve => {
     if (!jdNotify) {
@@ -262,14 +350,16 @@ function showMsg() {
 function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
-    $.get({url: `https://code.chiang.fun/api/v1/jd/jdcash/read/${randomCount}/`, 'timeout': 10000}, (err, resp, data) => {
+    $.get({url: "https://wuzhi03.coding.net/p/dj/d/RandomShareCode/git/raw/main/JD_Cash.json",headers:{
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }}, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           if (data) {
-            console.log(`随机取${randomCount}个码放到您固定的互助码后面(不影响已有固定互助)`)
+            console.log(`随机取助力码放到您固定的互助码后面(不影响已有固定互助)`)
             data = JSON.parse(data);
           }
         }
@@ -290,7 +380,7 @@ function shareCodesFormat() {
     $.newShareCodes = [];
     if ($.shareCodesArr[$.index - 1]) {
       $.newShareCodes = $.shareCodesArr[$.index - 1].split('@');
-    } else {
+    }/* else {
       console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`)
       const tempIndex = $.index > inviteCodes.length ? (inviteCodes.length - 1) : ($.index - 1);
       $.newShareCodes = inviteCodes[tempIndex].split('@');
@@ -300,7 +390,7 @@ function shareCodesFormat() {
     const readShareCodeRes = await readShareCode();
     if (readShareCodeRes && readShareCodeRes.code === 200) {
       $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
-    }
+    }*/
     $.newShareCodes.map((item, index) => $.newShareCodes[index] = { "inviteCode": item, "shareDate": $.shareDate })
     console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify($.newShareCodes)}`)
     resolve();
@@ -310,16 +400,49 @@ function shareCodesFormat() {
 function requireConfig() {
   return new Promise(resolve => {
     console.log(`开始获取${$.name}配置文件\n`);
-    let shareCodes = [];
-    if ($.isNode()) {
-      if (process.env.JD_CASH_SHARECODES) {
-        if (process.env.JD_CASH_SHARECODES.indexOf('\n') > -1) {
-          shareCodes = process.env.JD_CASH_SHARECODES.split('\n');
-        } else {
-          shareCodes = process.env.JD_CASH_SHARECODES.split('&');
-        }
-      }
-    }
+    let shareCodes = [
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+      'IhMxaey2bvUh92y6iw@eU9YF5PwJZ15lBK1lxto@eU9Ya-vmZPx19WvQwyVBgw@9I6auWc4sFSY8W3VzQ@eU9YM5XIAr5smxScuS9l@eU9YKajMA5lhpzqRmAZZ@eU9YN4nnGKNesSuNvyBn@eU9YN4jmM5R1kx2gkgZZ@eU9Ya73jNfQu9TjQznUV3w@eU9Ya-W3Nf8h-D3XziES0w',
+
+    ];
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
     if ($.isNode()) {
@@ -359,45 +482,23 @@ function taskUrl(functionId, body = {}) {
       'Connection': 'keep-alive',
       'Content-Type': 'application/json',
       'Referer': 'http://wq.jd.com/wxapp/pages/hd-interaction/index/index',
-      'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
+      'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
       'Accept-Language': 'zh-cn',
       'Accept-Encoding': 'gzip, deflate, br',
     }
   }
 }
 
-function getAuthorShareCode(url = "https://gitee.com/shylocks/updateTeam/raw/main/jd_cash.json") {
+function getAuthorShareCode(url = "https://wuzhi03.coding.net/p/dj/d/shareCodes/git/raw/main/jd_updateCash.json") {
   return new Promise(resolve => {
     $.get({url, headers:{
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-      }}, async (err, resp, data) => {
+      }, timeout: 200000,}, async (err, resp, data) => {
       $.authorCode = [];
       try {
         if (err) {
         } else {
           $.authorCode = JSON.parse(data)
-        }
-      } catch (e) {
-        $.logErr(e, resp)
-      } finally {
-        resolve();
-      }
-    })
-  })
-}
-function getAuthorShareCode2(url = "https://gitee.com/lxk0301/updateTeam/raw/master/shareCodes/jd_updateCash.json") {
-  return new Promise(resolve => {
-    $.get({url, headers:{
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-      }}, async (err, resp, data) => {
-      $.authorCode2 = [];
-      try {
-        if (err) {
-        } else {
-          $.authorCode2 = JSON.parse(data)
-          if ($.authorCode2 && $.authorCode2.length) {
-            $.authorCode.push(...$.authorCode2);
-          }
         }
       } catch (e) {
         $.logErr(e, resp)
@@ -419,7 +520,7 @@ function TotalBean() {
         "Connection": "keep-alive",
         "Cookie": cookie,
         "Referer": "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0")
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
       }
     }
     $.post(options, (err, resp, data) => {
